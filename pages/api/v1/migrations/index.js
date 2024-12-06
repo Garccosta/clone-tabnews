@@ -12,24 +12,29 @@ export default async function migrations(req, res) {
     verbose: true,
     migrationsTable: "pgmigrations",
   };
-  if (req.method === "GET") {
-    const pendingmigrations = await migrationRunner(defaultMigrationOptions);
-    await dbClient.end();
-    return res.status(200).json(pendingmigrations);
-  }
 
-  if (req.method === "POST") {
-    const migratedMigrations = await migrationRunner({
-      ...defaultMigrationOptions,
-      dryRun: false,
-    });
-
-    await dbClient.end();
-    if (migratedMigrations.length > 0) {
-      return res.status(201).json(migratedMigrations);
+  try {
+    if (req.method === "GET") {
+      const pendingmigrations = await migrationRunner(defaultMigrationOptions);
+      return res.status(200).json(pendingmigrations);
     }
-    return res.status(200).json(migratedMigrations);
-  }
 
-  return res.status(405).json({ error: "Method not allowed" });
+    if (req.method === "POST") {
+      const migratedMigrations = await migrationRunner({
+        ...defaultMigrationOptions,
+        dryRun: false,
+      });
+
+      if (migratedMigrations.length > 0) {
+        return res.status(201).json(migratedMigrations);
+      }
+      return res.status(200).json(migratedMigrations);
+    }
+
+    return res.status(405).json({ error: "Method not allowed" });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  } finally {
+    await dbClient.end();
+  }
 }

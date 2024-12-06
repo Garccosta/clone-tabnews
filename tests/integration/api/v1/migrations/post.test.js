@@ -1,6 +1,6 @@
 import database from "infra/database.js";
 
-beforeAll(cleanDatabase);
+beforeEach(cleanDatabase);
 
 async function cleanDatabase() {
   await database.query("DROP schema public CASCADE; create schema public;");
@@ -22,4 +22,17 @@ test("POST to api/v1/migrations should return 200", async () => {
   const responseBody2 = await res2.json();
   expect(Array.isArray(responseBody2)).toEqual(true);
   expect(responseBody2.length).toBe(0);
+});
+
+test("Other method to api/v1/migrations should return 405", async () => {
+  const otherRESTMethods = ["PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"];
+
+  for (const method of otherRESTMethods) {
+    const res = await fetch(`${apiURL}/v1/migrations`, { method });
+    expect(res.status).toBe(405);
+
+    const statusResponse = await fetch(`${apiURL}/v1/status`);
+    const resBody = await statusResponse.json();
+    expect(resBody.dependencies.database.opened_connections).toEqual(1);
+  }
 });

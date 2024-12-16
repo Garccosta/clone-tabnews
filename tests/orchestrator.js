@@ -18,6 +18,8 @@ async function waitForWebService() {
   }
 }
 
-export default {
+const orchestrator = {
   waitForAllServices,
 };
+
+export default orchestrator;

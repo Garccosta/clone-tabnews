@@ -1,8 +1,10 @@
+import Image from "next/image";
+
 function Home() {
   return (
     <div>
       <h1>Ari você é minha melhor parceria s2</h1>
-      <img
+      <Image
         src="https://media.tenor.com/dteyPLcdJJkAAAAC/cats-love.gif"
         alt="descrição do gif"
         width="400"

@@ -1,11 +1,10 @@
-import database from "infra/database.js";
 import orchestrator from "tests/orchestrator.js";
 
 const apiURL = "http://localhost:3000/api";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
-  await database.query("DROP schema public CASCADE; create schema public;");
+  await orchestrator.clearDatabase();
 });
 
 describe("GET api/v1/migrations", () => {

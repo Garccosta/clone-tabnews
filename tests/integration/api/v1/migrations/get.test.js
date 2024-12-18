@@ -8,11 +8,15 @@ beforeAll(async () => {
   await database.query("DROP schema public CASCADE; create schema public;");
 });
 
-test("GET to api/v1/migrations should return 200", async () => {
-  const res = await fetch(`${apiURL}/v1/migrations`);
-  expect(res.status).toBe(200);
+describe("GET api/v1/migrations", () => {
+  describe("Anonymous user", () => {
+    test("Retrieving pending migrations", async () => {
+      const res = await fetch(`${apiURL}/v1/migrations`);
+      expect(res.status).toBe(200);
 
-  const responseBody = await res.json();
-  expect(Array.isArray(responseBody)).toEqual(true);
-  expect(responseBody.length).toBeGreaterThan(0);
+      const responseBody = await res.json();
+      expect(Array.isArray(responseBody)).toEqual(true);
+      expect(responseBody.length).toBeGreaterThan(0);
+    });
+  });
 });

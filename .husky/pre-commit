@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Define the pattern to identify potential secret keys
+SECRET_PATTERN="(AWS|GCP|AZURE|POSTGRES|DB|SECRET|TOKEN|PASSWORD|PRIVATE)_?(PASSWORD|KEY)[:=]?[a-zA-Z0-9]+"
+
+# Checks each file that is being committed
+for file in $(git diff --cached --name-only); do
+  if git show ":$file" | grep -E "$SECRET_PATTERN" > /dev/null; then
+    echo "Error: The file '$file' contains a potential secret key!"
+    echo "Please check the key and remove it if necessary before proceeding."
+    exit 1
+  fi
+done
+
+# If no secret key is found, the commit proceeds
+exit 0

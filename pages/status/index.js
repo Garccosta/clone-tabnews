@@ -26,11 +26,7 @@ function UpdatedAt() {
     updatedAtText = new Date(data.updated_at).toLocaleString("pt-BR");
   }
 
-  return (
-    <>
-      <div>Última atualização: {updatedAtText}</div>
-    </>
-  );
+  return <div>Última atualização: {updatedAtText}</div>;
 }
 
 function DatabaseStatus() {
@@ -41,16 +37,22 @@ function DatabaseStatus() {
 
   if (!isLoading && data) {
     dbStatusText = data;
+    const { version, max_connections, opened_connections } =
+      dbStatusText.dependencies.database;
+
+    dbStatusText = (
+      <>
+        <div>Versão: {version}</div>
+        <div>Máximo de conexões: {max_connections}</div>
+        <div>Conexões abertas: {opened_connections}</div>
+      </>
+    );
   }
-  const { version, max_connections, opened_connections } =
-    dbStatusText.dependencies.database;
 
   return (
     <>
       <h3>Banco de dados</h3>
-      <div>Versão: {version}</div>
-      <div>Máximo de conexões: {max_connections}</div>
-      <div>Conexões abertas: {opened_connections}</div>
+      <div>{dbStatusText}</div>
     </>
   );
 }

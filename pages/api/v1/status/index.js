@@ -1,7 +1,7 @@
 import database from "infra/database";
 import { InternalServerError } from "infra/errors";
 
-async function status(req, res) {
+async function status(req, response) {
   try {
     const dbVersion = await database.query("SHOW server_version;");
     const dbMaxConnections = await database.query("SHOW max_connections;");
@@ -12,7 +12,7 @@ async function status(req, res) {
       values: [databaseName],
     });
 
-    return res.status(200).json({
+    return response.status(200).json({
       updated_at: new Date().toISOString(),
       dependencies: {
         database: {
